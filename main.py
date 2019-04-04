@@ -1,4 +1,4 @@
-from tictactoe import Window 
+from connectfour import Window 
 from pyngine import Interface
 
 def main():
