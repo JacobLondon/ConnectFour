@@ -21,11 +21,10 @@ class Window(Controller):
         self.odd_col = Color['darkgray']
         self.p1_col = Color['yellow1']
         self.p2_col = Color['red1']
+        self.empty_col = Color['gray60']
 
     """Initialize gui components and inputs"""
     def initialize_components(self):
-
-        offset = self.size[1] + 1
 
         # the game board
         self.game_panel = Panel(self)
@@ -35,9 +34,9 @@ class Window(Controller):
 
         # label and buttons
         self.options_panel = Panel(self)
-        self.options_panel.loc = self.screen_grid.get_pixel(self.size[1], 0)
+        self.options_panel.loc = self.screen_grid.get_pixel(gx=self.size[1], gy=0)
         self.options_panel.width, self.options_panel.height = \
-            self.screen_grid.get_pixel(self.screen_width - self.interface.tile_width * self.size[0], self.screen_height)
+            self.screen_grid.get_pixel(gx=self.screen_width - self.interface.tile_width * self.size[0], gy=self.size[0])
         self.options_panel.background = self.options_col
         # initialize and set locations of components
         self.color_panel = Panel(self)
@@ -50,10 +49,11 @@ class Window(Controller):
         self.undo_button.anchor = self.undo_button.center
         self.reset_button.anchor = self.reset_button.center
         # locations going downards
-        self.logo_label.loc = self.screen_grid.get_pixel(offset, 1)
+        offset = self.size[1] + 1
+        self.logo_label.loc = self.screen_grid.get_pixel(gx=offset, gy=1)
         self.color_panel.loc = self.logo_label.loc
-        self.undo_button.loc = self.screen_grid.get_pixel(offset, 4)
-        self.reset_button.loc = self.screen_grid.get_pixel(offset, 5)
+        self.undo_button.loc = self.screen_grid.get_pixel(gx=offset, gy=4)
+        self.reset_button.loc = self.screen_grid.get_pixel(gx=offset, gy=5)
         # button event actions
         self.undo_button.action = self.undo
         self.reset_button.action = self.reset
@@ -62,9 +62,10 @@ class Window(Controller):
         self.color_panel.height = self.undo_button.height
         self.color_panel.width = self.undo_button.width
 
-        # events and drawing
+        # events
         self.undo_event = Event(self, action=self.undo, keys=(pygame.K_u,))
         self.reset_event = Event(self, action=self.reset, keys=(pygame.K_n,))
+        # draw every frame
         self.column_drawer = Drawer(self, refresh=self.draw_columns)
         self.token_drawer = Drawer(self, refresh=self.draw_tokens)
         self.turn_drawer = Drawer(self, refresh=self.draw_turn)
@@ -89,6 +90,8 @@ class Window(Controller):
                 x = int(j * self.interface.tile_width + radius)
                 y = int(i * self.interface.tile_height + radius)
 
+                if token == 0:
+                    self.painter.draw_circle(x, y, radius, self.empty_col)
                 if token == 1:
                     self.painter.draw_circle(x, y, radius, self.p1_col)
                 elif token == 2:
