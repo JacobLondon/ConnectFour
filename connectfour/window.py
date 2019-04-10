@@ -129,8 +129,8 @@ class Window(Controller):
         self.game_panel.focused = False
         #time.sleep(self.debounce)
         tx, _ = self.interface.get_mouse_tile()
-        tx = int(tx)
-        return tx
+        self.tx = int(tx)
+        return self.tx
 
     """Undo the last move"""
     def undo(self):
